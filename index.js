@@ -1,4 +1,3 @@
-require('./src/utils/instrument');
 const { H, Handlers } = require('@highlight-run/node');
 
 const highlightConfig = {
@@ -59,6 +58,22 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
+  res.send({
+    nombre: 'Johan',
+    apellido: 'Posso',
+    edad: 25,
+    correo: 'johanposso@gmail.com',
+    telefono: '3178123456',
+    direccion: 'Calle 123 # 45-67',
+    ciudad: 'Bogotá',
+    pais: 'Colombia',
+    codigoPostal: '111111',
+    fechaNacimiento: '1990-01-01',
+    genero: 'Masculino',
+  });
+});
+
+app.get('/test', (req, res) => {
   throw new Error('sample error!');
   res.send('Hello World! 0.9366233450420486');
 });
