@@ -73,10 +73,6 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/test', (req, res) => {
-  throw new Error('sample error!');
-  res.send('Hello World! 0.9366233450420486');
-});
 app.get('/sync', (req, res) => {
   // do something dangerous...
   throw new Error('oh no! this is a synchronous error');
@@ -92,10 +88,6 @@ app.get('/async', async (req, res) => {
   } finally {
     res.status(200).json({ hello: 'world' });
   }
-});
-
-app.get('/debug-sentry', function mainHandler(req, res) {
-  throw new Error('My first Sentry error!');
 });
 
 // This should be before any other error middleware and after all controllers (route definitions)
