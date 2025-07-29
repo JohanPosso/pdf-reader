@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true, //Le indico que siempre que guarde lo formatee
+  "prettier.requireConfig": true, //Solo formatee codigo al guardar si tiene el archivo de configuracion de prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode", //Para utilizarlo de manera global
+  "prettier.singleQuote": true
+}

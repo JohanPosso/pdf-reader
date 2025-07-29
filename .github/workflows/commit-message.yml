@@ -1,0 +1,24 @@
+name: Conventional Commits
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint commits with commitlint
+        id: commitlint
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.js
+      - name: Mensaje explicativo si falla
+        if: failure()
+        run: |
+          echo "❌ Uno o más mensajes de commit no cumplen con Conventional Commits." >> $GITHUB_STEP_SUMMARY
+          echo "Por favor, usa un formato como: 'feat: agregar nueva funcionalidad' o 'fix: corregir error'." >> $GITHUB_STEP_SUMMARY
+          echo "Más información: https://www.conventionalcommits.org/es/v1.0.0/" >> $GITHUB_STEP_SUMMARY

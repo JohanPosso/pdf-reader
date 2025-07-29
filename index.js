@@ -1,0 +1,94 @@
+require('./src/utils/instrument');
+const { H, Handlers } = require('@highlight-run/node');
+
+const highlightConfig = {
+  projectID: 'qe988kwd',
+  serviceName: 'my-express-app',
+  serviceVersion: 'git-sha',
+  environment: 'development',
+};
+H.init(highlightConfig);
+
+// All other imports below
+// Import with `import * as Sentry from "@sentry/node"` if you are using ESM
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const session = require('express-session');
+require('dotenv').config();
+const authRoutes = require('./src/routes/auth.routes');
+const userRoutes = require('./src/routes/user.routes');
+const sequelize = require('./src/config/db');
+const app = express();
+
+const port = 3000;
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Cambia esto por el dominio de tu frontend
+    credentials: true,
+  }),
+);
+app.use(express.json());
+
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Límite de 100 peticiones por IP
+  }),
+);
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecreto',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false, // Cambia a true si usas HTTPS
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 1 día
+    },
+  }),
+);
+
+// This should be before any controllers (route definitions)
+app.use(Handlers.middleware(highlightConfig));
+
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+
+app.get('/', (req, res) => {
+  throw new Error('sample error!');
+  res.send('Hello World! 0.9366233450420486');
+});
+app.get('/sync', (req, res) => {
+  // do something dangerous...
+  throw new Error('oh no! this is a synchronous error');
+});
+
+app.get('/async', async (req, res) => {
+  try {
+    // do something dangerous...
+    throw new Error('oh no!');
+  } catch (error) {
+    const { secureSessionId, requestId } = H.parseHeaders(req.headers);
+    H.consumeError(error, secureSessionId, requestId);
+  } finally {
+    res.status(200).json({ hello: 'world' });
+  }
+});
+
+app.get('/debug-sentry', function mainHandler(req, res) {
+  throw new Error('My first Sentry error!');
+});
+
+// This should be before any other error middleware and after all controllers (route definitions)
+app.use(Handlers.errorHandler(highlightConfig));
+sequelize.sync().then(() => {
+  app.listen(port, () => {
+    console.log(`Servidor escuchando en el puerto ${port}`);
+  });
+});
