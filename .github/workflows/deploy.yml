@@ -35,7 +35,7 @@ jobs:
             npm install
 
             # Reinicia la app (usando el nombre registrado en PM2)
-            pm2 reload pdf-reader || pm2 start app.js --name pdf-reader
+            pm2 reload pdf-reader || pm2 start index.js --name pdf-reader
 
             # Guarda el estado de PM2 para reinicios del sistema
             pm2 save
