@@ -3,14 +3,12 @@ const { H, Handlers } = require('@highlight-run/node');
 
 const highlightConfig = {
   projectID: 'qe988kwd',
-  serviceName: 'my-express-app',
+  serviceName: 'pdf-reader-app',
   serviceVersion: 'git-sha',
-  environment: 'development',
+  environment: process.env.NODE_ENV,
 };
 H.init(highlightConfig);
 
-// All other imports below
-// Import with `import * as Sentry from "@sentry/node"` if you are using ESM
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -22,12 +20,12 @@ const userRoutes = require('./src/routes/user.routes');
 const sequelize = require('./src/config/db');
 const app = express();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(helmet());
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Cambia esto por el dominio de tu frontend
+    origin: process.env.FRONTEND_URL, // Cambia esto por el dominio de tu frontend
     credentials: true,
   }),
 );
