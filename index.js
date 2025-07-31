@@ -75,7 +75,7 @@ app.get('/', (req, res) => {
 
 app.get('/sync', () => {
   // do something dangerous...
-  throw new Error('oh no! this is a synchronous error');
+  throw new Error('oh no! this is a synchronous error ');
 });
 
 app.get('/async', async (req, res) => {

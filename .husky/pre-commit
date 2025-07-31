@@ -34,4 +34,5 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "✅ Todas las validaciones pasaron. Commit permitido."
+echo "✅ Todas las validaciones de código pasaron."
+echo "📝 Ahora se validará el formato del mensaje de commit..."
