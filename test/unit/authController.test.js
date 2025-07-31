@@ -150,7 +150,7 @@ describe('AuthController', () => {
 
       expect(mockReq.session.destroy).toHaveBeenCalled();
       expect(mockRes.clearCookie).toHaveBeenCalledWith('connect.sid');
-      expect(mockRes.json).toHaveBeenCalledWith({ message: 'Logout exitoso' });
+      expect(mockRes.json).toHaveBeenCalledWith({ message: 'Logout exitoso!' });
     });
   });
 });

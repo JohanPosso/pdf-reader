@@ -155,7 +155,7 @@ describe('Auth Routes Integration', () => {
     it('debería hacer logout exitosamente', async () => {
       const response = await request(app).post('/auth/logout').expect(200);
 
-      expect(response.body).toEqual({ message: 'Logout exitoso' });
+      expect(response.body).toEqual({ message: 'Logout exitoso!' });
     });
   });
 });
