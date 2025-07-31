@@ -8,12 +8,21 @@ Este proyecto utiliza Husky para ejecutar validaciones automáticas antes de cad
 
 Se ejecuta automáticamente antes de cada `git commit` y valida:
 
-1. **📝 Linting** - Verifica que el código cumpla con las reglas de ESLint
-2. **🧪 Tests** - Ejecuta todos los tests unitarios con cobertura
-3. **🔨 Build** - Valida la sintaxis de todos los archivos JavaScript
-4. **🔒 Security Audit** - Verifica vulnerabilidades de seguridad
+1. **📝 Conventional Commits** - Verifica que el mensaje cumpla con el formato
+2. **📝 Linting** - Verifica que el código cumpla con las reglas de ESLint
+3. **🧪 Tests** - Ejecuta todos los tests unitarios con cobertura
+4. **🔨 Build** - Valida la sintaxis de todos los archivos JavaScript
+5. **🔒 Security Audit** - Verifica vulnerabilidades de seguridad
 
 Si alguna validación falla, el commit se cancela automáticamente.
+
+### Commit-msg Hook (`.husky/commit-msg`)
+
+Se ejecuta automáticamente para validar el formato del mensaje de commit:
+
+- **📝 Conventional Commits** - Valida que el mensaje siga el formato estándar
+- **❌ Bloquea commits** que no cumplan con el formato
+- **📚 Muestra ejemplos** de formato correcto si falla
 
 ### Pre-push Hook (`.husky/pre-push`)
 
@@ -73,9 +82,40 @@ npm install
 - `.husky/pre-push` - Hook de pre-push
 - `package.json` - Scripts de validación
 
+## Workflows de GitHub Actions
+
+### Commit Message Validation (`.github/workflows/commit-validation.yml`)
+
+Se ejecuta en cada push a las ramas `develop` y `main`:
+
+- **🔍 Valida todos los commits** del push
+- **📝 Verifica conventional commits** en cada commit
+- **❌ Bloquea el push** si algún commit no cumple las reglas
+
+### CI Develop (`.github/workflows/deploy.yml`)
+
+Se ejecuta en push y pull requests a `develop` y `main`:
+
+- **📝 Validación de commits** (job separado)
+- **🧪 Tests unitarios** con cobertura
+- **🔨 Build validation**
+- **🔒 Security audit**
+- **📋 Linting**
+
+### Branch Protection
+
+Las ramas `develop` y `main` están protegidas:
+
+- **🚫 No se permite push directo** sin que pasen todos los checks
+- **✅ Requiere pull request** con aprobación
+- **🔍 Valida conventional commits** en todos los commits
+- **🧪 Requiere que pasen todos los tests**
+
 ## Beneficios
 
 ✅ **Calidad de código** - Solo se permite código que pase todas las validaciones
 ✅ **Seguridad** - Se detectan vulnerabilidades antes del commit
 ✅ **Consistencia** - Todos los desarrolladores usan las mismas validaciones
 ✅ **CI/CD confiable** - Los commits que llegan a CI ya pasaron las validaciones locales
+✅ **Conventional commits** - Formato estándar en todos los commits
+✅ **Protección de ramas** - No se puede hacer push sin validaciones
