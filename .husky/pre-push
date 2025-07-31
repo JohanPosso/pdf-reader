@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Ejecutando validaciones pre-push..."
+
+# Verificar que no haya cambios sin commitear
+if [ -n "$(git status --porcelain)" ]; then
+    echo "❌ Hay cambios sin commitear. Haz commit de todos los cambios antes de hacer push."
+    exit 1
+fi
+
+# Verificar que estés en la rama correcta (opcional)
+current_branch=$(git branch --show-current)
+if [ "$current_branch" != "develop" ] && [ "$current_branch" != "main" ]; then
+    echo "⚠️  Estás en la rama '$current_branch'. Asegúrate de que sea la rama correcta."
+fi
+
+echo "✅ Validaciones pre-push completadas. Push permitido." 
