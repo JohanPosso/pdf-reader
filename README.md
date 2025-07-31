@@ -118,6 +118,11 @@ El proyecto incluye un workflow de GitHub Actions que:
 4. Ejecuta build del proyecto
 5. Verifica vulnerabilidades con npm audit
 
+## Requisitos del Sistema
+
+- **Node.js** >= 20.0.0
+- **npm** >= 10.0.0
+
 ## Tecnologías utilizadas
 
 - **Node.js** - Runtime de JavaScript
