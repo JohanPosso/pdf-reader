@@ -1,0 +1,60 @@
+name: Commit Message Validation
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  validate-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: .commitlintrc.json
+
+      - name: Check for conventional commits
+        run: |
+          echo "🔍 Validando que todos los commits cumplan con conventional commits..."
+
+          # Obtener todos los commits del push
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Para push, validar desde el commit anterior hasta el actual
+            COMMITS=$(git log --oneline ${{ github.event.before }}..${{ github.event.after }})
+          else
+            # Para pull request, validar todos los commits del PR
+            COMMITS=$(git log --oneline origin/${{ github.base_ref }}..HEAD)
+          fi
+
+          echo "Commits a validar:"
+          echo "$COMMITS"
+
+          # Validar cada commit
+          while IFS= read -r commit; do
+            if [ -n "$commit" ]; then
+              COMMIT_MSG=$(echo "$commit" | cut -d' ' -f2-)
+              echo "Validando: $COMMIT_MSG"
+              
+              # Verificar formato básico de conventional commits
+              if ! echo "$COMMIT_MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+"; then
+                echo "❌ Commit no cumple con conventional commits: $COMMIT_MSG"
+                echo "Formato esperado: <type>(<scope>): <description>"
+                echo "Tipos válidos: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+                exit 1
+              fi
+            fi
+          done <<< "$COMMITS"
+
+          echo "✅ Todos los commits cumplen con conventional commits"

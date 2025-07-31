@@ -1,0 +1,53 @@
+name: Branch Protection Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-branch-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup branch protection
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: branches } = await github.rest.repos.listBranches({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const protectedBranches = ['main', 'develop'];
+
+            for (const branch of protectedBranches) {
+              if (branches.find(b => b.name === branch)) {
+                try {
+                  await github.rest.repos.updateBranchProtection({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    branch: branch,
+                    required_status_checks: {
+                      strict: true,
+                      contexts: [
+                        'validate-commits',
+                        'validate',
+                        'Commit Message Validation / validate-commits'
+                      ]
+                    },
+                    enforce_admins: false,
+                    required_pull_request_reviews: {
+                      required_approving_review_count: 1,
+                      dismiss_stale_reviews: true,
+                      require_code_owner_reviews: false
+                    },
+                    restrictions: null,
+                    allow_force_pushes: false,
+                    allow_deletions: false
+                  });
+                  console.log(`✅ Branch protection enabled for ${branch}`);
+                } catch (error) {
+                  console.log(`⚠️ Could not update branch protection for ${branch}: ${error.message}`);
+                }
+              } else {
+                console.log(`⚠️ Branch ${branch} does not exist`);
+              }
+            }
