@@ -94,6 +94,6 @@ app.use(Handlers.errorHandler(highlightConfig));
 sequelize.sync().then(() => {
   app.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`Servidor escuchando en el puerto ${port}`);
+    console.log(`Servidor escuchando en el puerto: ${port}`);
   });
 });
