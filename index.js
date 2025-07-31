@@ -90,7 +90,6 @@ app.get('/async', async (req, res) => {
   }
 });
 
-// This should be before any other error middleware and after all controllers (route definitions)
 app.use(Handlers.errorHandler(highlightConfig));
 sequelize.sync().then(() => {
   app.listen(port, () => {
