@@ -23,9 +23,11 @@ const sequelize = new Sequelize(
 sequelize
   .authenticate()
   .then(() => {
+    // eslint-disable-next-line no-console
     console.log('Conexión exitosa a la base de datos');
   })
   .catch((err) => {
+    // eslint-disable-next-line no-console
     console.error('Error de conexión:', err);
   });
 

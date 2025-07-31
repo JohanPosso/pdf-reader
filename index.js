@@ -73,7 +73,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/sync', (req, res) => {
+app.get('/sync', () => {
   // do something dangerous...
   throw new Error('oh no! this is a synchronous error');
 });
@@ -93,6 +93,7 @@ app.get('/async', async (req, res) => {
 app.use(Handlers.errorHandler(highlightConfig));
 sequelize.sync().then(() => {
   app.listen(port, () => {
+    // eslint-disable-next-line no-console
     console.log(`Servidor escuchando en el puerto ${port}`);
   });
 });
